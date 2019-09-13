@@ -1,18 +1,18 @@
 === UCF Content Sanitizer Plugin ===
 Contributors: ucfwebcom
-Requires at least: 4.9.7 {{Update as needed!}}
-Tested up to: 4.9.7 {{Update as needed!}}
+Requires at least: 4.9.7
+Tested up to: 5.2.2
 Stable tag: 0.0.0
-Requires PHP: 5.4 {{Update as needed!}}
+Requires PHP: 5.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
-{{Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.}}
+Provides filters and utilities for sanitizing WordPress post content.
 
 
 == Description ==
 
-{{This is the long description.  No limit, and you can use Markdown (as well as in the following sections).}}
+This plugin provides filters and utilities that help sanitize WordPress post content.  The sanitization options provided by this plugin are designed with UCF websites in mind and solve frequent issues in UCF-specific post content, such as copy+pasted Outlook Safelinks.
 
 
 == Documentation ==
@@ -22,7 +22,7 @@ Head over to the [UCF Content Sanitizer Plugin wiki](https://github.com/UCF/UCF-
 
 == Changelog ==
 
-= 1.0.0 = {{Update number as needed!}}
+= 1.0.0 =
 * Initial release
 
 
@@ -33,7 +33,7 @@ n/a
 
 == Development ==
 
-Note that compiled, minified css and js {{edit this list if the plugin doesn't include css/js!}} files are included within the repo.  Changes to these files should be tracked via git (so that users installing the plugin using traditional installation methods will have a working plugin out-of-the-box.)
+Note that compiled, minified css/js files are included within the repo.  Changes to these files should be tracked via git (so that users installing the plugin using traditional installation methods will have a working plugin out-of-the-box.)
 
 [Enabling debug mode](https://codex.wordpress.org/Debugging_in_WordPress) in your `wp-config.php` file is recommended during development to help catch warnings and bugs.
 
@@ -50,10 +50,10 @@ Note that compiled, minified css and js {{edit this list if the plugin doesn't i
 
     The full list of modifiable config values can be viewed in `gulpfile.js` (see `config` variable).
 3. Run `gulp default` to process front-end assets.
-4. If you haven't already done so, create a new WordPress site on your development environment to test this plugin against{{IF THIS PLUGIN REQUIRES OTHER PLUGINS:}}, and [install and activate all plugin dependencies](https://github.com/UCF/UCF-Content-Sanitizer-Plugin/wiki/Installation#installation-requirements){{ENDIF}}.
+4. If you haven't already done so, create a new WordPress site on your development environment to test this plugin against.
 5. Activate this plugin on your development WordPress site.
-6. Configure plugin settings from the WordPress admin under "{{Your plugin's admin menu label}}".
-7. Run `gulp watch` to continuously watch changes to scss and js files.{{edit this list if the plugin doesn't include css/js!}}  If you enabled BrowserSync in `gulp-config.json`, it will also reload your browser when plugin files change.
+6. Configure plugin settings from the WordPress admin under "Settings > UCF Content Sanitizer".
+7. Run `gulp watch` to continuously watch changes to compiled front-end assets.  If you enabled BrowserSync in `gulp-config.json`, it will also reload your browser when plugin files change.
 
 = Other Notes =
 * This plugin's README.md file is automatically generated. Please only make modifications to the README.txt file, and make sure the `gulp readme` command has been run before committing README changes.  See the [contributing guidelines](https://github.com/UCF/UCF-Content-Sanitizer-Plugin/blob/master/CONTRIBUTING.md) for more information.
