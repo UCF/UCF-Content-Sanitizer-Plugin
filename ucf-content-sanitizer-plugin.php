@@ -11,3 +11,61 @@ GitHub Plugin URI: UCF/UCF-Content-Sanitizer-Plugin
 if ( ! defined( 'WPINC' ) ) {
     die;
 }
+
+define( 'UCF_SANITIZER__PLUGIN_URL', plugins_url( basename( dirname( __FILE__ ) ) ) );
+define( 'UCF_SANITIZER__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'UCF_SANITIZER__STATIC_URL', UCF_SANITIZER__PLUGIN_URL . '/static' );
+define( 'UCF_SANITIZER__PLUGIN_FILE', __FILE__ );
+
+
+require_once 'admin/class-ucf-sanitizer-config.php';
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	require_once 'commands/class-ucf-sanitizer-sanitize-content.php';
+	require_once 'commands/class-ucf-sanitizer-run-all.php';
+
+	WP_CLI::add_command( 'ucfsanitizer sanitize content', 'UCF_Sanitizer_Command_Sanitize_Content' );
+	WP_CLI::add_command( 'ucfsanitizer sanitize all', 'UCF_Sanitizer_Command_Sanitize_All' );
+}
+
+
+if ( ! function_exists( 'ucf_sanitizer_activation' ) ) {
+	/**
+	 * Function that runs on plugin activation
+	 * @author Jo Dickson
+	 * @since 1.0.0
+	 */
+	function ucf_sanitizer_activation() {
+		UCF_Sanitizer_Config::add_options();
+	}
+
+	register_activation_hook( UCF_SANITIZER__FILE, 'ucf_sanitizer_activation' );
+}
+
+if ( ! function_exists( 'ucf_sanitizer_deactivation' ) ) {
+	/**
+	 * Function that runs on plugin deactivation
+	 * @author Jo Dickson
+	 * @since 1.0.0
+	 */
+	function ucf_sanitizer_deactivation() {
+		UCF_Sanitizer_Config::delete_options();
+	}
+
+	register_deactivation_hook( UCF_SANITIZER__FILE, 'ucf_sanitizer_deactivation' );
+}
+
+if ( ! function_exists( 'ucf_sanitizer_init' ) ) {
+	/**
+	 * Function that runs when all plugins are loaded
+	 * @author Jo Dickson
+	 * @since 1.0.0
+	 */
+	function ucf_sanitizer_init() {
+		// Add admin menu item
+		add_action( 'admin_init', array( 'UCF_Sanitizer_Config', 'settings_init' ), 10, 0 );
+		add_action( 'admin_menu', array( 'UCF_Sanitizer_Config', 'add_options_page' ), 10, 0 );
+	}
+
+	add_action( 'plugins_loaded', 'ucf_sanitizer_init', 10, 0 );
+}
