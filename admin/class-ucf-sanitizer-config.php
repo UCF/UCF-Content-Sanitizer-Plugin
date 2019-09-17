@@ -438,11 +438,11 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 		}
 
 		/**
-         * Returns the installed post types as an option array
-         * @author Jim Barnes
-         * @since 1.0.0
-         * @return array
-         **/
+		 * Returns the installed post types as an option array
+		 * @author Jim Barnes
+		 * @since 1.0.0
+		 * @return array
+		 **/
 		public static function get_post_types_as_options() {
 			$retval = array();
 			$args = array(
