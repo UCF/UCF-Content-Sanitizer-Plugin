@@ -17,11 +17,9 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			 * @var array The option default values
 			 */
 			$option_defaults = array(
-				// 'allowed_tags_on_save'            => '',
 				'enabled_post_types'              => array( 'post', 'page' ),
 				'cli_enable_postmaster_filtering' => true,
-				'cli_enable_safelink_filtering'   => true,
-				// 'cli_enable_tag_filtering'        => true
+				'cli_enable_safelink_filtering'   => true
 			);
 
 		/**
@@ -37,8 +35,6 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			add_option( self::$options_prefix . 'enabled_post_types', $defaults['enabled_post_types'] );
 			add_option( self::$options_prefix . 'cli_enable_postmaster_filtering', $defaults['cli_enable_postmaster_filtering'] );
 			add_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] );
-			// add_option( self::$options_prefix . 'TODO', $defaults['TODO'] );
-			// add_option( self::$options_prefix . 'TODO', $defaults['TODO'] );
 		}
 
 		/**
@@ -52,8 +48,6 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			delete_option( self::$options_prefix . 'enabled_post_types' );
 			delete_option( self::$options_prefix . 'cli_enable_postmaster_filtering' );
 			delete_option( self::$options_prefix . 'cli_enable_safelink_filtering' );
-			// delete_option( self::$options_prefix . 'TODO' );
-			// delete_option( self::$options_prefix . 'TODO' );
 		}
 
 		/**
@@ -69,9 +63,7 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			$configurable_defaults = array(
 				'enabled_post_types' => get_option( self::$options_prefix . 'enabled_post_types', $defaults['enabled_post_types'] ),
 				'cli_enable_postmaster_filtering' => get_option( self::$options_prefix . 'cli_enable_postmaster_filtering', $defaults['cli_enable_postmaster_filtering'] ),
-				'cli_enable_safelink_filtering' => get_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] ),
-				// 'TODO' => get_option( self::$options_prefix . 'TODO', $defaults['TODO'] ),
-				// 'TODO' => get_option( self::$options_prefix . 'TODO', $defaults['TODO'] )
+				'cli_enable_safelink_filtering' => get_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] )
 			);
 
 			$configurable_defaults = self::format_options( $configurable_defaults );

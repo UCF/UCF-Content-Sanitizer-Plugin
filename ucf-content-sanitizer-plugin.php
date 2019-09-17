@@ -19,6 +19,7 @@ define( 'UCF_SANITIZER__PLUGIN_FILE', __FILE__ );
 
 
 require_once 'admin/class-ucf-sanitizer-config.php';
+require_once 'includes/class-ucf-sanitizer-common.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once 'commands/class-ucf-sanitizer-sanitize-content.php';
