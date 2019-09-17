@@ -39,7 +39,7 @@ if ( ! function_exists( 'ucf_sanitizer_activation' ) ) {
 		UCF_Sanitizer_Config::add_options();
 	}
 
-	register_activation_hook( UCF_SANITIZER__FILE, 'ucf_sanitizer_activation' );
+	register_activation_hook( UCF_SANITIZER__PLUGIN_FILE, 'ucf_sanitizer_activation' );
 }
 
 if ( ! function_exists( 'ucf_sanitizer_deactivation' ) ) {
@@ -52,7 +52,7 @@ if ( ! function_exists( 'ucf_sanitizer_deactivation' ) ) {
 		UCF_Sanitizer_Config::delete_options();
 	}
 
-	register_deactivation_hook( UCF_SANITIZER__FILE, 'ucf_sanitizer_deactivation' );
+	register_deactivation_hook( UCF_SANITIZER__PLUGIN_FILE, 'ucf_sanitizer_deactivation' );
 }
 
 if ( ! function_exists( 'ucf_sanitizer_init' ) ) {
@@ -65,6 +65,9 @@ if ( ! function_exists( 'ucf_sanitizer_init' ) ) {
 		// Add admin menu item
 		add_action( 'admin_init', array( 'UCF_Sanitizer_Config', 'settings_init' ), 10, 0 );
 		add_action( 'admin_menu', array( 'UCF_Sanitizer_Config', 'add_options_page' ), 10, 0 );
+
+		// Init actions
+		add_action( 'init', array( 'UCF_Sanitizer_Config', 'add_option_formatting_filters' ), 10, 0 );
 	}
 
 	add_action( 'plugins_loaded', 'ucf_sanitizer_init', 10, 0 );
