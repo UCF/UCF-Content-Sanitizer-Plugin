@@ -16,7 +16,7 @@ if ( ! class_exists( 'UCF_Sanitizer_Common' ) ) {
 		 *
 		 * @since 1.0.0
 		 * @author Jo Dickson
-		 * @param string $content Artitrary HTML content string
+		 * @param string $content Arbitrary HTML content string
 		 * @param mixed $callback Callable function to perform on each link href value in $content
 		 * @return string Sanitized content string
 		 */
