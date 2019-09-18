@@ -69,6 +69,9 @@ if ( ! function_exists( 'ucf_sanitizer_init' ) ) {
 
 		// Init actions
 		add_action( 'init', array( 'UCF_Sanitizer_Config', 'add_option_formatting_filters' ), 10, 0 );
+
+		// Post save filters
+		add_filter( 'wp_insert_post_data', array( 'UCF_Sanitizer_Common', 'add_post_save_content_sanitizers' ), 99, 2 );
 	}
 
 	add_action( 'plugins_loaded', 'ucf_sanitizer_init', 10, 0 );

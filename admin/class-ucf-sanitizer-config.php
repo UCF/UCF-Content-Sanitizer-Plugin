@@ -19,7 +19,9 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			$option_defaults = array(
 				'enabled_post_types'              => array( 'post', 'page' ),
 				'cli_enable_postmaster_filtering' => true,
-				'cli_enable_safelink_filtering'   => true
+				'cli_enable_safelink_filtering'   => true,
+				'post_save_enable_postmaster_filtering' => true,
+				'post_save_enable_safelink_filtering'   => true
 			);
 
 		/**
@@ -35,6 +37,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			add_option( self::$options_prefix . 'enabled_post_types', $defaults['enabled_post_types'] );
 			add_option( self::$options_prefix . 'cli_enable_postmaster_filtering', $defaults['cli_enable_postmaster_filtering'] );
 			add_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] );
+			add_option( self::$options_prefix . 'post_save_enable_postmaster_filtering', $defaults['post_save_enable_postmaster_filtering'] );
+			add_option( self::$options_prefix . 'post_save_enable_safelink_filtering', $defaults['post_save_enable_safelink_filtering'] );
 		}
 
 		/**
@@ -48,6 +52,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			delete_option( self::$options_prefix . 'enabled_post_types' );
 			delete_option( self::$options_prefix . 'cli_enable_postmaster_filtering' );
 			delete_option( self::$options_prefix . 'cli_enable_safelink_filtering' );
+			delete_option( self::$options_prefix . 'post_save_enable_postmaster_filtering' );
+			delete_option( self::$options_prefix . 'post_save_enable_safelink_filtering' );
 		}
 
 		/**
@@ -63,7 +69,9 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			$configurable_defaults = array(
 				'enabled_post_types' => get_option( self::$options_prefix . 'enabled_post_types', $defaults['enabled_post_types'] ),
 				'cli_enable_postmaster_filtering' => get_option( self::$options_prefix . 'cli_enable_postmaster_filtering', $defaults['cli_enable_postmaster_filtering'] ),
-				'cli_enable_safelink_filtering' => get_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] )
+				'cli_enable_safelink_filtering' => get_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] ),
+				'post_save_enable_postmaster_filtering' => get_option( self::$options_prefix . 'post_save_enable_postmaster_filtering', $defaults['post_save_enable_postmaster_filtering'] ),
+				'post_save_enable_safelink_filtering' => get_option( self::$options_prefix . 'post_save_enable_safelink_filtering', $defaults['post_save_enable_safelink_filtering'] )
 			);
 
 			$configurable_defaults = self::format_options( $configurable_defaults );
@@ -134,6 +142,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 					// checkbox/boolean fields
 					case 'cli_enable_postmaster_filtering':
 					case 'cli_enable_safelink_filtering':
+					case 'post_save_enable_postmaster_filtering':
+					case 'post_save_enable_safelink_filtering':
 						$list[$key] = filter_var( $val, FILTER_VALIDATE_BOOLEAN );
 						break;
 					default:
@@ -229,6 +239,13 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 				$settings_slug
 			);
 
+			add_settings_section(
+				'ucf_sanitizer_settings_post_save',
+				'WordPress Content Filter Settings',
+				null,
+				$settings_slug
+			);
+
 			// Register Shared Settings fields
 			add_settings_field(
 				self::$options_prefix . 'enabled_post_types',
@@ -247,7 +264,7 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			// Register WP CLI Command Settings fields
 			add_settings_field(
 				self::$options_prefix . 'cli_enable_postmaster_filtering',
-				'Enable Postmaster Redirect Filtering',
+				'Enable Postmaster Redirect Filtering (WP-CLI)',
 				$display_fn,
 				$settings_slug,
 				'ucf_sanitizer_settings_cli',
@@ -260,13 +277,40 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 
 			add_settings_field(
 				self::$options_prefix . 'cli_enable_safelink_filtering',
-				'Enable Outlook Safelink Redirect Filtering',
+				'Enable Outlook Safelink Redirect Filtering (WP-CLI)',
 				$display_fn,
 				$settings_slug,
 				'ucf_sanitizer_settings_cli',
 				array(
 					'label_for'   => self::$options_prefix . 'cli_enable_safelink_filtering',
 					'description' => 'When checked, WP-CLI commands will replace Outlook Safelinks in post content with cleaned URLs.',
+					'type'        => 'checkbox'
+				)
+			);
+
+			// Register WordPress Content Filter Settings
+			add_settings_field(
+				self::$options_prefix . 'post_save_enable_postmaster_filtering',
+				'Enable Postmaster Redirect Filtering (on Post Save)',
+				$display_fn,
+				$settings_slug,
+				'ucf_sanitizer_settings_post_save',
+				array(
+					'label_for'   => self::$options_prefix . 'post_save_enable_postmaster_filtering',
+					'description' => 'When checked, Postmaster redirect URLs in post content will be replaced with cleaned URLs whenever that post is saved.',
+					'type'        => 'checkbox'
+				)
+			);
+
+			add_settings_field(
+				self::$options_prefix . 'post_save_enable_safelink_filtering',
+				'Enable Outlook Safelink Redirect Filtering (on Post Save)',
+				$display_fn,
+				$settings_slug,
+				'ucf_sanitizer_settings_post_save',
+				array(
+					'label_for'   => self::$options_prefix . 'post_save_enable_safelink_filtering',
+					'description' => 'When checked, Outlook Safelinks in post content will be replaced with with cleaned URLs whenever that post is saved.',
 					'type'        => 'checkbox'
 				)
 			);

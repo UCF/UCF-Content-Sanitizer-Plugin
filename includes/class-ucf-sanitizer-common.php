@@ -147,5 +147,46 @@ if ( ! class_exists( 'UCF_Sanitizer_Common' ) ) {
 			return $content;
 		}
 
+		/**
+		 * Runs all valid sanitizers on the given content string,
+		 * depending on plugin settings/configuration for posts on-save.
+		 *
+		 * @since 1.0.0
+		 * @author Jo Dickson
+		 * @param string $content Arbitrary content to sanitize
+		 * @return string Sanitized content
+		 */
+		public static function run_post_save_sanitizers( $content ) {
+			if ( UCF_Sanitizer_Config::get_option_or_default( 'post_save_enable_safelink_filtering' ) === true ) {
+				$content = self::sanitize_links( $content, array( 'UCF_Sanitizer_Common', 'strip_outlook_safelinks' ) );
+			}
+			if ( UCF_Sanitizer_Config::get_option_or_default( 'post_save_enable_postmaster_filtering' ) === true ) {
+				$content = self::sanitize_links( $content, array( 'UCF_Sanitizer_Common', 'strip_postmaster_redirects' ) );
+			}
+			return $content;
+		}
+
+		/**
+		 * Filter for `wp_insert_post_data` that performs sanitization
+		 * on post content immediately before the post is saved.
+		 *
+		 * @since 1.0.0
+		 * @author Jo Dickson
+		 * @param array $data    An array of slashed post data.
+		 * @param array $postarr An array of sanitized, but otherwise unmodified post data.
+		 * @return array Modified, slashed post data
+		 */
+		public static function add_post_save_content_sanitizers( $data, $postarr ) {
+			// Only perform sanitization on this post if
+			// it's an enabled post type:
+			if ( in_array( $data['post_type'], UCF_Sanitizer_Config::get_option_or_default( 'enabled_post_types' ) ) ) {
+				// Values in $data are expected to be slashed.
+				// Unslash all modified values, then re-slash them
+				// before returning $data:
+				$data['post_content'] = wp_slash( self::run_post_save_sanitizers( wp_unslash( $data['post_content'] ) ) );
+			}
+			return $data;
+		}
+
 	}
 }
