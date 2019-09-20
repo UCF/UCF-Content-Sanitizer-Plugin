@@ -72,14 +72,16 @@ if ( ! class_exists( 'UCF_Sanitizer_Admin' ) ) {
 		 * @return array TinyMCE init config
 		 */
 		public static function configure_tinymce( $in ) {
-			ob_start();
-		?>
+			if ( wp_script_is( 'ucfsanitize_admin_post_edit' ) ) {
+				ob_start();
+			?>
 			function (plugin, args) {
 				// Return the clean HTML
 				args.content = UCFSanitizerJSCommon.runSanitizers(args.content);
 			}
-		<?php
-			$in['paste_preprocess'] = trim( ob_get_clean() );
+			<?php
+				$in['paste_preprocess'] = trim( ob_get_clean() );
+			}
 
 			return $in;
 		}
