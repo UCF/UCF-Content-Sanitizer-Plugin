@@ -21,7 +21,9 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 				'cli_enable_postmaster_filtering' => true,
 				'cli_enable_safelink_filtering'   => true,
 				'post_save_enable_postmaster_filtering' => true,
-				'post_save_enable_safelink_filtering'   => true
+				'post_save_enable_safelink_filtering'   => true,
+				'on_paste_enable_postmaster_filtering' => true,
+				'on_paste_enable_safelink_filtering'   => true
 			);
 
 		/**
@@ -39,6 +41,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			add_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] );
 			add_option( self::$options_prefix . 'post_save_enable_postmaster_filtering', $defaults['post_save_enable_postmaster_filtering'] );
 			add_option( self::$options_prefix . 'post_save_enable_safelink_filtering', $defaults['post_save_enable_safelink_filtering'] );
+			add_option( self::$options_prefix . 'on_paste_enable_postmaster_filtering', $defaults['on_paste_enable_postmaster_filtering'] );
+			add_option( self::$options_prefix . 'on_paste_enable_safelink_filtering', $defaults['on_paste_enable_safelink_filtering'] );
 		}
 
 		/**
@@ -54,6 +58,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			delete_option( self::$options_prefix . 'cli_enable_safelink_filtering' );
 			delete_option( self::$options_prefix . 'post_save_enable_postmaster_filtering' );
 			delete_option( self::$options_prefix . 'post_save_enable_safelink_filtering' );
+			delete_option( self::$options_prefix . 'on_paste_enable_postmaster_filtering' );
+			delete_option( self::$options_prefix . 'on_paste_enable_safelink_filtering' );
 		}
 
 		/**
@@ -71,7 +77,9 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 				'cli_enable_postmaster_filtering' => get_option( self::$options_prefix . 'cli_enable_postmaster_filtering', $defaults['cli_enable_postmaster_filtering'] ),
 				'cli_enable_safelink_filtering' => get_option( self::$options_prefix . 'cli_enable_safelink_filtering', $defaults['cli_enable_safelink_filtering'] ),
 				'post_save_enable_postmaster_filtering' => get_option( self::$options_prefix . 'post_save_enable_postmaster_filtering', $defaults['post_save_enable_postmaster_filtering'] ),
-				'post_save_enable_safelink_filtering' => get_option( self::$options_prefix . 'post_save_enable_safelink_filtering', $defaults['post_save_enable_safelink_filtering'] )
+				'post_save_enable_safelink_filtering' => get_option( self::$options_prefix . 'post_save_enable_safelink_filtering', $defaults['post_save_enable_safelink_filtering'] ),
+				'on_paste_enable_postmaster_filtering' => get_option( self::$options_prefix . 'on_paste_enable_postmaster_filtering', $defaults['on_paste_enable_postmaster_filtering'] ),
+				'on_paste_enable_safelink_filtering' => get_option( self::$options_prefix . 'on_paste_enable_safelink_filtering', $defaults['on_paste_enable_safelink_filtering'] )
 			);
 
 			$configurable_defaults = self::format_options( $configurable_defaults );
@@ -144,6 +152,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 					case 'cli_enable_safelink_filtering':
 					case 'post_save_enable_postmaster_filtering':
 					case 'post_save_enable_safelink_filtering':
+					case 'on_paste_enable_postmaster_filtering':
+					case 'on_paste_enable_safelink_filtering':
 						$list[$key] = filter_var( $val, FILTER_VALIDATE_BOOLEAN );
 						break;
 					default:
@@ -233,8 +243,8 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			);
 
 			add_settings_section(
-				'ucf_sanitizer_settings_cli',
-				'WP-CLI Command Settings',
+				'ucf_sanitizer_settings_tinymce',
+				'TinyMCE WYSIWYG Editor Settings',
 				null,
 				$settings_slug
 			);
@@ -242,6 +252,13 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 			add_settings_section(
 				'ucf_sanitizer_settings_post_save',
 				'WordPress Content Filter Settings',
+				null,
+				$settings_slug
+			);
+
+			add_settings_section(
+				'ucf_sanitizer_settings_cli',
+				'WP-CLI Command Settings',
 				null,
 				$settings_slug
 			);
@@ -261,29 +278,29 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 				)
 			);
 
-			// Register WP CLI Command Settings fields
+			// Register TinyMCE WYSIWYG Editor Settings
 			add_settings_field(
-				self::$options_prefix . 'cli_enable_postmaster_filtering',
-				'Enable Postmaster Redirect Filtering (WP-CLI)',
+				self::$options_prefix . 'on_paste_enable_postmaster_filtering',
+				'Enable Postmaster Redirect Filtering (on Paste)',
 				$display_fn,
 				$settings_slug,
-				'ucf_sanitizer_settings_cli',
+				'ucf_sanitizer_settings_tinymce',
 				array(
-					'label_for'   => self::$options_prefix . 'cli_enable_postmaster_filtering',
-					'description' => 'When checked, WP-CLI commands will replace Postmaster redirect URLs in post content with cleaned URLs.',
+					'label_for'   => self::$options_prefix . 'on_paste_enable_postmaster_filtering',
+					'description' => 'When checked, Postmaster redirect URLs copy+pasted into a TinyMCE WYSIWYG editor will be replaced with cleaned URLs on-paste.',
 					'type'        => 'checkbox'
 				)
 			);
 
 			add_settings_field(
-				self::$options_prefix . 'cli_enable_safelink_filtering',
-				'Enable Outlook Safelink Redirect Filtering (WP-CLI)',
+				self::$options_prefix . 'on_paste_enable_safelink_filtering',
+				'Enable Outlook Safelink Redirect Filtering (on Paste)',
 				$display_fn,
 				$settings_slug,
-				'ucf_sanitizer_settings_cli',
+				'ucf_sanitizer_settings_tinymce',
 				array(
-					'label_for'   => self::$options_prefix . 'cli_enable_safelink_filtering',
-					'description' => 'When checked, WP-CLI commands will replace Outlook Safelinks in post content with cleaned URLs.',
+					'label_for'   => self::$options_prefix . 'on_paste_enable_safelink_filtering',
+					'description' => 'When checked, Outlook Safelinks copy+pasted into a TinyMCE WYSIWYG editor will be replaced with cleaned URLs on-paste.',
 					'type'        => 'checkbox'
 				)
 			);
@@ -311,6 +328,33 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 				array(
 					'label_for'   => self::$options_prefix . 'post_save_enable_safelink_filtering',
 					'description' => 'When checked, Outlook Safelinks in post content will be replaced with with cleaned URLs whenever that post is saved.',
+					'type'        => 'checkbox'
+				)
+			);
+
+			// Register WP CLI Command Settings fields
+			add_settings_field(
+				self::$options_prefix . 'cli_enable_postmaster_filtering',
+				'Enable Postmaster Redirect Filtering (WP-CLI)',
+				$display_fn,
+				$settings_slug,
+				'ucf_sanitizer_settings_cli',
+				array(
+					'label_for'   => self::$options_prefix . 'cli_enable_postmaster_filtering',
+					'description' => 'When checked, the <code>ucfsanitizer</code> WP-CLI commands will replace Postmaster redirect URLs in post content with cleaned URLs.',
+					'type'        => 'checkbox'
+				)
+			);
+
+			add_settings_field(
+				self::$options_prefix . 'cli_enable_safelink_filtering',
+				'Enable Outlook Safelink Redirect Filtering (WP-CLI)',
+				$display_fn,
+				$settings_slug,
+				'ucf_sanitizer_settings_cli',
+				array(
+					'label_for'   => self::$options_prefix . 'cli_enable_safelink_filtering',
+					'description' => 'When checked, the <code>ucfsanitizer</code> WP-CLI commands will replace Outlook Safelinks in post content with cleaned URLs.',
 					'type'        => 'checkbox'
 				)
 			);
@@ -482,19 +526,23 @@ if ( ! class_exists( 'UCF_Sanitizer_Config' ) ) {
 		}
 
 		/**
-		 * Returns the installed post types as an option array
-		 * @author Jim Barnes
+		 * Returns the installed post types as an option array.
+		 * Excludes "Media".
+		 *
+		 * @author Jo Dickson
 		 * @since 1.0.0
 		 * @return array
 		 **/
 		public static function get_post_types_as_options() {
 			$retval = array();
 			$args = array(
-				'public'   => true
+				'public' => true
 			);
 			$post_types = get_post_types( $args, 'objects' );
-			foreach( $post_types as $post_type ) {
-				$retval[$post_type->name] = $post_type->label;
+			foreach ( $post_types as $post_type ) {
+				if ( $post_type->name !== 'attachment' ) {
+					$retval[$post_type->name] = $post_type->label;
+				}
 			}
 			return $retval;
 		}

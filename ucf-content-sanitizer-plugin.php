@@ -15,10 +15,12 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'UCF_SANITIZER__PLUGIN_URL', plugins_url( basename( dirname( __FILE__ ) ) ) );
 define( 'UCF_SANITIZER__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UCF_SANITIZER__STATIC_URL', UCF_SANITIZER__PLUGIN_URL . '/static' );
+define( 'UCF_SANITIZER__JS_URL', UCF_SANITIZER__STATIC_URL . '/js' );
 define( 'UCF_SANITIZER__PLUGIN_FILE', __FILE__ );
 
 
 require_once 'admin/class-ucf-sanitizer-config.php';
+require_once 'admin/class-ucf-sanitizer-admin.php';
 require_once 'includes/class-ucf-sanitizer-common.php';
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -66,6 +68,10 @@ if ( ! function_exists( 'ucf_sanitizer_init' ) ) {
 		// Add admin menu item
 		add_action( 'admin_init', array( 'UCF_Sanitizer_Config', 'settings_init' ), 10, 0 );
 		add_action( 'admin_menu', array( 'UCF_Sanitizer_Config', 'add_options_page' ), 10, 0 );
+
+		// Admin assets and other modifications
+		add_action( 'admin_enqueue_scripts', array( 'UCF_Sanitizer_Admin', 'admin_enqueue_scripts' ), 10, 1 );
+		add_filter( 'tiny_mce_before_init', array( 'UCF_Sanitizer_Admin', 'configure_tinymce' ), 10, 1 );
 
 		// Init actions
 		add_action( 'init', array( 'UCF_Sanitizer_Config', 'add_option_formatting_filters' ), 10, 0 );
